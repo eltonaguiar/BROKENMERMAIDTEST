@@ -11,119 +11,164 @@ bottleneck.
 
 ---
 
-## Table of Contents
-1. [Introduction](#introduction)
-2. [Components and Subsystems](#components-and-subsystems)
-3. [Data Flow](#data-flow)
-4. [Configuration Locations, Triggers, Schedules, and Dependencies](#configuration-locations-triggers-schedules-and-dependencies)
-5. [Insert vs Update Behavior](#insert-vs-update-behavior)
-6. [Class-Level vs Attribute-Level Scope](#class-level-vs-attribute-level-scope)
-7. [Related Workflows and Integrations](#related-workflows-and-integrations)
-8. [Edge Cases, Failure Modes, and Interactions with Adjacent Systems](#edge-cases-failure-modes-and-interactions-with-adjacent-systems)
+## 1. What ServiceNow Discovery is and what problem it solves
+
+ServiceNow Discovery is an automated process that identifies and documents network devices and applications within your environment. It helps in understanding the network topology, identifying vulnerabilities, and managing resources efficiently. The primary problem it solves is the manual and time-consuming process of inventory management, allowing organizations to maintain up-to-date and accurate information about their network infrastructure.
 
 ---
 
-## Introduction
-ServiceNow Discovery is a comprehensive network and application discovery tool that automates the process of identifying, classifying, and documenting network devices and applications. It solves the problem of manual and time-consuming discovery processes, ensuring that all assets are accurately and efficiently cataloged in the Configuration Management Database (CMDB).
+## 2. Major Components/Subsystems and How They Interact
 
 ---
 
-## Components and Subsystems
-ServiceNow Discovery consists of several key components and subsystems:
-
-1. **Discovery Engine**: The core component responsible for scanning and identifying network devices and applications.
-2. **Discovery Rules**: Define the criteria for what is discovered and how.
-3. **Discovery Tasks**: The actual scans that are executed based on the rules.
-4. **Discovery Data**: The raw data collected from the network devices and applications.
-5. **Discovery Data Parser**: Converts raw data into a format that can be understood by ServiceNow.
-6. **Discovery Data Transformer**: Transforms the parsed data into a format suitable for the CMDB.
-7. **Discovery Data Loader**: Loads the transformed data into the CMDB.
+### a. Discovery Engine
+- **Description**: The core component that performs the actual discovery of network devices and applications.
+- **Interactions**: Communicates with the network devices and applications to gather information.
 
 ---
 
-### Interaction Flow
-1. **Discovery Tasks**: Discovery tasks are scheduled based on rules and triggers.
-2. **Discovery Engine**: Executes the tasks, collecting data from network devices and applications.
-3. **Discovery Data Parser**: Parses the collected data.
-4. **Discovery Data Transformer**: Transforms the parsed data.
-5. **Discovery Data Loader**: Loads the transformed data into the CMDB.
+### b. Discovery Manager
+- **Description**: Manages the discovery processes, schedules, and configurations.
+- **Interactions**: Orchestrates the discovery engine and other components.
 
 ---
 
-## Data Flow
-When a network device or application is discovered, the process follows these steps:
-
-1. **Discovery Task Execution**: A discovery task is executed based on the defined rules and triggers.
-2. **Data Collection**: The Discovery Engine collects data from the network device or application.
-3. **Data Parsing**: The collected data is parsed by the Discovery Data Parser.
-4. **Data Transformation**: The parsed data is transformed by the Discovery Data Transformer.
-5. **Data Loading**: The transformed data is loaded into the CMDB.
+### c. Discovery Rules
+- **Description**: Define what to discover and how to discover it.
+- **Interactions**: Configured in Discovery Manager and used by the Discovery Engine.
 
 ---
 
-## Configuration Locations, Triggers, Schedules, and Dependencies
-Discovery configurations are managed in the Discovery module. Key configuration locations include:
+### d. Discovery Tasks
+- **Description**: Specific instances of discovery rules that are executed.
+- **Interactions**: Created based on discovery rules and managed by Discovery Manager.
 
-- **Discovery Rules**: Define what is discovered and how.
-- **Discovery Tasks**: Define the schedule and criteria for discovery tasks.
-- **Discovery Data Parser**: Configure how raw data is parsed.
-- **Discovery Data Transformer**: Configure how data is transformed for the CMDB.
+---
+
+### e. Discovery Logs
+- **Description**: Records the progress and results of discovery tasks.
+- **Interactions**: Used for troubleshooting and monitoring.
+
+---
+
+### f. Discovery Configuration
+- **Description**: Settings and parameters that control the discovery process.
+- **Interactions**: Configured in Discovery Manager and used by the Discovery Engine.
+
+---
+
+## 3. Complete Data Flow
+
+1. **Discovery Task Creation**: A discovery task is created based on a discovery rule.
+2. **Discovery Engine Execution**: The Discovery Engine runs the task, communicating with network devices and applications.
+3. **Data Collection**: The engine collects data from the devices and applications.
+4. **Data Parsing**: The collected data is parsed and transformed into a format suitable for the CMDB.
+5. **CMDB Integration**: The parsed data is inserted or updated in the CMDB.
+6. **Discovery Logs**: The process is logged for monitoring and troubleshooting.
+
+---
+
+## 4. Configuration Locations, Triggers, Schedules, and Dependencies
+
+---
+
+### Configuration Locations
+- **Discovery Manager**: Manages discovery rules, tasks, and schedules.
+- **Discovery Configuration**: Contains settings and parameters for the discovery process.
 
 ---
 
 ### Triggers
-Triggers can be set to run discovery tasks automatically based on events or schedules.
+- **Discovery Rules**: Triggered based on predefined conditions (e.g., new network devices).
+- **Discovery Tasks**: Triggered based on discovery rules.
 
 ---
 
 ### Schedules
-Discovery tasks can be scheduled to run at specific times or intervals.
+- **Discovery Rules**: Scheduled to run at specific times.
+- **Discovery Tasks**: Scheduled to run based on discovery rules.
 
 ---
 
 ### Dependencies
-Discovery tasks and rules can depend on other configurations, such as network devices or applications.
+- **Discovery Rules**: Depends on the Discovery Manager for configuration.
+- **Discovery Tasks**: Depends on discovery rules for execution.
 
 ---
 
-## Insert vs Update Behavior
-Discovery behaves differently when creating new records versus updating existing ones:
+## 5. Insert vs Update Behavior
 
 - **Insert**: When a new device or application is discovered, a new record is created in the CMDB.
-- **Update**: When an existing device or application is discovered, the existing record is updated with new information.
+- **Update**: When an existing device or application is discovered, the existing record is updated in the CMDB.
 
 ---
 
-## Class-Level vs Attribute-Level Scope
-Discovery distinguishes between class-level and attribute-level scope:
+## 6. Class-Level vs Attribute-Level Scope
 
-- **Class-Level Scope**: Controls the discovery of entire classes of devices or applications.
-- **Attribute-Level Scope**: Controls the discovery of specific attributes of devices or applications.
-
----
-
-## Related Workflows and Integrations
-Discovery integrates with several other ServiceNow modules:
-
-- **CMDB**: Stores the discovered data.
-- **Event Management**: Handles any events generated by discovery.
-- **Service Mapping**: Maps discovered devices and applications.
-- **Orchestration**: Automates actions based on discovered data.
+- **Class-Level Scope**: Controls the types of devices or applications that can be discovered.
+- **Attribute-Level Scope**: Controls the specific attributes that are collected and documented.
 
 ---
 
-## Edge Cases, Failure Modes, and Interactions with Adjacent Systems
-Discovery can encounter several edge cases and failure modes:
+## 7. Related Workflows and Integrations
 
-- **Network Issues**: Discovery may fail if network devices are unreachable.
-- **Data Parsing Errors**: Errors in parsing raw data can prevent data from being loaded into the CMDB.
-- **CMDB Updates**: Updates to the CMDB can affect the accuracy of discovery data.
+---
 
-For more detailed information, refer to the official ServiceNow documentation:
+### CMDB
+- **Integration**: Discovery feeds data into the CMDB for asset management.
+- **Workflows**: Used for asset lifecycle management.
+
+---
+
+### Event Management
+- **Integration**: Discovery can trigger events based on discovered vulnerabilities or anomalies.
+- **Workflows**: Used for incident response and remediation.
+
+---
+
+### Service Mapping
+- **Integration**: Discovery provides data for creating and updating network maps.
+- **Workflows**: Used for network topology visualization and analysis.
+
+---
+
+### Orchestration
+- **Integration**: Discovery can trigger orchestration workflows for automated remediation.
+- **Workflows**: Used for automated response to discovered issues.
+
+---
+
+## 8. Edge Cases, Failure Modes, and Interactions with Adjacent Systems
+
+---
+
+### Edge Cases
+- **New Devices**: Discovery must handle new devices that are not yet in the CMDB.
+- **Dynamic Environments**: Discovery must handle environments with frequent changes.
+
+---
+
+### Failure Modes
+- **Network Issues**: Discovery may fail if it cannot communicate with network devices.
+- **Configuration Errors**: Discovery may fail if its configuration is incorrect.
+
+---
+
+### Interactions with Adjacent Systems
+- **CMDB**: Discovery interacts with the CMDB for data insertion and updates.
+- **Event Management**: Discovery interacts with Event Management for triggering events.
+- **Service Mapping**: Discovery interacts with Service Mapping for creating network maps.
+- **Orchestration**: Discovery interacts with Orchestration for triggering workflows.
+
+---
+
+## References
 
 - [ServiceNow Discovery Documentation](https://docs.servicenow.com/en-us/bundle/service-now-discovery/page/administer/discovery-overview.html)
-
-This technical reference provides a comprehensive overview of ServiceNow Discovery, its components, data flow, and related integrations.
+- [ServiceNow CMDB Documentation](https://docs.servicenow.com/en-us/bundle/service-now-discovery/page/administer/cmdb-overview.html)
+- [ServiceNow Event Management Documentation](https://docs.servicenow.com/en-us/bundle/service-now-discovery/page/administer/event-management-overview.html)
+- [ServiceNow Service Mapping Documentation](https://docs.servicenow.com/en-us/bundle/service-now-discovery/page/administer/service-mapping-overview.html)
+- [ServiceNow Orchestration Documentation](https://docs.servicenow.com/en-us/bundle/service-now-discovery/page/administer/orchestration-overview.html)
 
 
 
